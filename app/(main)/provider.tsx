@@ -7,6 +7,7 @@ import { useContext, useEffect } from "react";
 import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { AuthContext } from "@/context/AuthContext";
+
 function Provider({
   children,
 }: Readonly<{
@@ -16,12 +17,12 @@ function Provider({
   const convex = useConvex();
   const { user, setUser } = useContext(AuthContext);
   useEffect(() => {
-    CheckUserAuth;
+    CheckUserAuth();
   }, []);
   const CheckUserAuth = async () => {
     const token = localStorage.getItem("user_token");
     const user = token && (await GetAuthUserData(token));
-    console.log(user);
+
     if (!user?.email) {
       router.replace("/sign-in");
       return;
@@ -30,7 +31,7 @@ function Provider({
       const result = await convex.query(api.users.GetUser, {
         email: user?.email,
       });
-      console.log(result);
+
       setUser(result);
     } catch (e) {
       console.log(e);
@@ -39,7 +40,7 @@ function Provider({
 
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
       {children}
     </div>
   );

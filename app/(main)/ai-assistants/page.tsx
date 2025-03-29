@@ -1,4 +1,4 @@
 function AIAssistants() {
-  return <div>AIAssistants</div>;
+  return <div>AI Assistants</div>;
 }
 export default AIAssistants;
