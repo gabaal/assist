@@ -7,10 +7,16 @@ import { useContext } from "react";
 function Header() {
   const { user } = useContext(AuthContext);
   return (
-    <div className="p-3 shadow-sm">
+    <div className="p-3 shadow-sm flex justify-between items-center px-14">
       <Image src={"/logo.svg"} alt="logo" width={40} height={40} />
       {user?.picture && (
-        <Image src={user?.picture} alt="logo" width={40} height={40} />
+        <Image
+          src={user?.picture}
+          alt="logo"
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
       )}
     </div>
   );
