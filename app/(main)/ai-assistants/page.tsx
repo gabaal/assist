@@ -4,9 +4,13 @@ import { Button } from "@/components/ui/button";
 import AIAssistantList from "@/services/AIAssistantList";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
+import { useConvex, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { AuthContext } from "@/context/AuthContext";
+import { Loader, Loader2Icon } from "lucide-react";
 
 export type ASSISTANT = {
   id: number;
@@ -19,6 +23,26 @@ export type ASSISTANT = {
 };
 function AIAssistants() {
   const [selectedAssistant, setSelectedAssistant] = useState<ASSISTANT[]>([]);
+  const insertAssistant = useMutation(
+    api.userAiAssistants.InsertSelectedAssistants
+  );
+  const convex = useConvex();
+
+  const { user } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    user && GetUserAssistants();
+  }, [user]);
+
+  const GetUserAssistants = async () => {
+    const result = await convex.query(
+      api.userAiAssistants.GetAllUserAssistants({
+        uid: user._id,
+      })
+    );
+    console.log(result);
+  };
 
   const onSelect = (assistant: ASSISTANT) => {
     const item = selectedAssistant.find(
@@ -40,6 +64,16 @@ function AIAssistants() {
     return item ? true : false;
   };
 
+  const onClickContinue = async () => {
+    setLoading(true);
+    const result = await insertAssistant({
+      records: selectedAssistant,
+      uid: user?._id,
+    });
+    setLoading(false);
+    console.log(result);
+  };
+
   return (
     <div className="px-10 mt-20 md:px-28 lg:px-36 xl:px-48">
       <div className="flex justify-between items-center">
@@ -55,7 +89,12 @@ function AIAssistants() {
             </p>
           </BlurFade>
         </div>
-        <RainbowButton disabled={selectedAssistant.length == 0}>
+        <RainbowButton
+          onClick={onClickContinue}
+          disabled={selectedAssistant.length == 0 || loading}
+        >
+          {" "}
+          {loading && <Loader2Icon className="animate-spin" size={16} />}
           Continue
         </RainbowButton>
       </div>
