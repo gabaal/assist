@@ -11,6 +11,7 @@ import { useConvex, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { AuthContext } from "@/context/AuthContext";
 import { Loader, Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type ASSISTANT = {
   id: number;
@@ -27,7 +28,7 @@ function AIAssistants() {
     api.userAiAssistants.InsertSelectedAssistants
   );
   const convex = useConvex();
-
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -37,11 +38,16 @@ function AIAssistants() {
 
   const GetUserAssistants = async () => {
     const result = await convex.query(
-      api.userAiAssistants.GetAllUserAssistants({
+      api.userAiAssistants.GetAllUserAssistants,
+      {
         uid: user._id,
-      })
+      }
     );
     console.log(result);
+    if (result.length > 0) {
+      router.replace("/workspace");
+      return;
+    }
   };
 
   const onSelect = (assistant: ASSISTANT) => {
