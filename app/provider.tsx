@@ -18,7 +18,7 @@ function Provider({
         <AuthContext.Provider value={{ user, setUser }}>
           <NextThemesProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
