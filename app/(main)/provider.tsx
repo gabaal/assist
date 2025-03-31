@@ -3,10 +3,11 @@
 import { GetAuthUserData } from "@/services/GlobalApi";
 import Header from "./_components/Header";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { AuthContext } from "@/context/AuthContext";
+import { AssistantContext } from "@/context/AssistantContext";
 
 function Provider({
   children,
@@ -16,6 +17,9 @@ function Provider({
   const router = useRouter();
   const convex = useConvex();
   const { user, setUser } = useContext(AuthContext);
+
+  const [assistant, setAssistant] = useState();
+
   useEffect(() => {
     CheckUserAuth();
   }, []);
@@ -40,8 +44,10 @@ function Provider({
 
   return (
     <div>
-      <Header />
-      {children}
+      <AssistantContext.Provider value={{ assistant, setAssistant }}>
+        <Header />
+        {children}
+      </AssistantContext.Provider>
     </div>
   );
 }

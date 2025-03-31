@@ -43,7 +43,7 @@ function AIAssistants() {
         uid: user._id,
       }
     );
-    console.log(result);
+
     if (result.length > 0) {
       router.replace("/workspace");
       return;
